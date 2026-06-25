@@ -1,9 +1,35 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:EmvCardReader.ViewModels"
              x:Class="EmvCardReader.MainPage"
+             x:DataType="vm:MainViewModel"
              Title="NFC Card Reader"
              BackgroundColor="{AppThemeBinding Light=#F2F2F7, Dark=#000000}">
+
+    <ContentPage.Resources>
+        <Style x:Key="CardSection" TargetType="Border">
+            <Setter Property="StrokeThickness" Value="0" />
+            <Setter Property="Padding" Value="16" />
+            <Setter Property="BackgroundColor" Value="{AppThemeBinding Light=White, Dark=#1C1C1E}" />
+            <Setter Property="StrokeShape" Value="RoundRectangle 14" />
+        </Style>
+
+        <Style x:Key="SectionTitle" TargetType="Label">
+            <Setter Property="FontAttributes" Value="Bold" />
+            <Setter Property="FontSize" Value="16" />
+        </Style>
+
+        <Style x:Key="RowKey" TargetType="Label">
+            <Setter Property="FontSize" Value="13" />
+            <Setter Property="TextColor" Value="#8E8E93" />
+        </Style>
+
+        <Style x:Key="RowValue" TargetType="Label">
+            <Setter Property="FontSize" Value="13" />
+            <Setter Property="FontAttributes" Value="Bold" />
+        </Style>
+    </ContentPage.Resources>
 
     <ScrollView>
         <VerticalStackLayout Padding="20" Spacing="16">
@@ -15,27 +41,121 @@
                 HorizontalOptions="Center" />
 
             <Label
-                x:Name="StatusLabel"
-                Text="Checking NFC…"
+                Text="{Binding Status}"
                 FontSize="14"
                 TextColor="{AppThemeBinding Light=#3C3C43, Dark=#AEAEB2}"
                 HorizontalTextAlignment="Center" />
 
             <Button
-                x:Name="ScanButton"
                 Text="Scan card"
-                Clicked="OnScanClicked"
+                Command="{Binding ScanCommand}"
                 HeightRequest="52"
                 FontAttributes="Bold"
                 CornerRadius="12" />
 
             <ActivityIndicator
-                x:Name="Spinner"
-                IsRunning="False"
-                IsVisible="False"
+                IsRunning="{Binding IsBusy}"
+                IsVisible="{Binding IsBusy}"
                 HorizontalOptions="Center" />
 
-            <VerticalStackLayout x:Name="ResultsLayout" Spacing="14" />
+            <!-- Results -->
+            <VerticalStackLayout Spacing="14" IsVisible="{Binding HasResult}">
+
+                <Button
+                    Text="📋 Copy everything as text"
+                    Command="{Binding CopyAllCommand}"
+                    FontSize="14"
+                    CornerRadius="10" />
+
+                <!-- Summary -->
+                <Border Style="{StaticResource CardSection}">
+                    <VerticalStackLayout Spacing="8">
+                        <Label Text="Summary" Style="{StaticResource SectionTitle}" />
+                        <VerticalStackLayout Spacing="6" BindableLayout.ItemsSource="{Binding Summary}">
+                            <BindableLayout.ItemTemplate>
+                                <DataTemplate x:DataType="vm:KeyValueRow">
+                                    <Grid ColumnDefinitions="0.42*,0.58*" ColumnSpacing="8">
+                                        <Label Grid.Column="0" Text="{Binding Key}" Style="{StaticResource RowKey}" />
+                                        <Label Grid.Column="1" Text="{Binding Value}" Style="{StaticResource RowValue}" />
+                                    </Grid>
+                                </DataTemplate>
+                            </BindableLayout.ItemTemplate>
+                        </VerticalStackLayout>
+                    </VerticalStackLayout>
+                </Border>
+
+                <!-- One section per application -->
+                <VerticalStackLayout Spacing="14" BindableLayout.ItemsSource="{Binding Applications}">
+                    <BindableLayout.ItemTemplate>
+                        <DataTemplate x:DataType="vm:CardApplicationView">
+                            <Border Style="{StaticResource CardSection}">
+                                <VerticalStackLayout Spacing="8">
+                                    <Label Text="{Binding SectionTitle}" Style="{StaticResource SectionTitle}" />
+                                    <Label Text="{Binding Header}" FontAttributes="Bold" FontSize="13" />
+
+                                    <VerticalStackLayout Spacing="8" BindableLayout.ItemsSource="{Binding Tags}">
+                                        <BindableLayout.ItemTemplate>
+                                            <DataTemplate x:DataType="vm:TagRowView">
+                                                <VerticalStackLayout Spacing="1">
+                                                    <Label Text="{Binding Header}" FontSize="12" FontAttributes="Bold" />
+                                                    <Label Text="{Binding Decoded}" FontSize="13" IsVisible="{Binding HasDecoded}" />
+                                                    <Label Text="{Binding ValueHex}" FontSize="10" TextColor="#8E8E93" />
+                                                    <Label Text="{Binding Source}" FontSize="9" TextColor="#C7C7CC" />
+                                                </VerticalStackLayout>
+                                            </DataTemplate>
+                                        </BindableLayout.ItemTemplate>
+                                    </VerticalStackLayout>
+
+                                    <Label
+                                        Text="{Binding TransactionsHeader}"
+                                        IsVisible="{Binding HasTransactions}"
+                                        FontAttributes="Bold"
+                                        FontSize="13"
+                                        Margin="0,8,0,0" />
+                                    <VerticalStackLayout BindableLayout.ItemsSource="{Binding Transactions}">
+                                        <BindableLayout.ItemTemplate>
+                                            <DataTemplate x:DataType="vm:TextLine">
+                                                <Label Text="{Binding Text}" FontSize="12" />
+                                            </DataTemplate>
+                                        </BindableLayout.ItemTemplate>
+                                    </VerticalStackLayout>
+                                </VerticalStackLayout>
+                            </Border>
+                        </DataTemplate>
+                    </BindableLayout.ItemTemplate>
+                </VerticalStackLayout>
+
+                <!-- Warnings -->
+                <Border Style="{StaticResource CardSection}" IsVisible="{Binding HasWarnings}">
+                    <VerticalStackLayout Spacing="8">
+                        <Label Text="Warnings" Style="{StaticResource SectionTitle}" />
+                        <VerticalStackLayout Spacing="4" BindableLayout.ItemsSource="{Binding Warnings}">
+                            <BindableLayout.ItemTemplate>
+                                <DataTemplate x:DataType="vm:TextLine">
+                                    <Label Text="{Binding Text}" FontSize="12" TextColor="OrangeRed" />
+                                </DataTemplate>
+                            </BindableLayout.ItemTemplate>
+                        </VerticalStackLayout>
+                    </VerticalStackLayout>
+                </Border>
+
+                <!-- Raw APDU trace (collapsible) -->
+                <Border Style="{StaticResource CardSection}" IsVisible="{Binding HasApdu}">
+                    <VerticalStackLayout Spacing="8">
+                        <Label Text="Raw APDU trace" Style="{StaticResource SectionTitle}" />
+                        <Button
+                            Text="{Binding ApduToggleText}"
+                            Command="{Binding ToggleApduCommand}"
+                            FontSize="13"
+                            CornerRadius="10" />
+                        <Label
+                            Text="{Binding ApduTrace}"
+                            FontSize="11"
+                            IsVisible="{Binding IsApduVisible}" />
+                    </VerticalStackLayout>
+                </Border>
+
+            </VerticalStackLayout>
 
         </VerticalStackLayout>
     </ScrollView>

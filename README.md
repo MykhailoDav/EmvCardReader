@@ -79,38 +79,12 @@ The terminal-side values needed for `GET PROCESSING OPTIONS` (PDOL) are filled w
 
 ---
 
-## Project structure
-
-```
-EmvCardReader/
-├── Emv/                         # Platform-agnostic EMV engine
-│   ├── ICardTransceiver.cs      # Raw APDU channel + ApduResponse
-│   ├── INfcCardReader.cs        # Reader surface consumed by the UI
-│   ├── EmvReader.cs             # The read-flow state machine
-│   ├── EmvModels.cs             # EmvCardData / EmvApplication / EmvTagValue / EmvTransaction
-│   ├── EmvDecoder.cs            # Raw tag values → human-readable strings
-│   ├── EmvTags.cs               # Tag → name dictionary
-│   ├── Tlv.cs                   # Defensive BER-TLV + DOL parser
-│   └── Hex.cs                   # Hex helpers
-├── Platforms/
-│   ├── Android/AndroidNfcCardReader.cs   # NfcAdapter reader-mode + IsoDep
-│   └── iOS/IosNfcCardReader.cs           # CoreNFC NFCTagReaderSession + ISO7816
-├── MainPage.xaml(.cs)           # UI: scan, summary, per-tag data, APDU trace
-└── MauiProgram.cs               # DI wiring (registers the per-platform reader)
-```
-
----
-
 ## Platform support
 
 | Platform | NFC reading | Notes |
 |----------|:-----------:|-------|
 | **Android** | ✅ | Requires NFC hardware enabled. Uses reader-mode (`NfcA`/`NfcB`, skip NDEF). |
 | **iOS** | ✅ | iPhone 7+ / iOS 13+. Requires the NFC entitlement + declared AIDs (see below). |
-| macOS (Mac Catalyst) | ⛔ | Builds and runs, but there is no Mac NFC reader — the UI shows "not supported". |
-| Windows | ⛔ | Builds and runs, but no NFC reader is wired up. |
-
-> The cross-platform code targets all four heads so the project compiles everywhere; actual card reading is implemented for **Android and iOS**.
 
 ---
 

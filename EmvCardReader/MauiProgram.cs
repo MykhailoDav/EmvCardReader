@@ -1,5 +1,7 @@
 ﻿using Microsoft.Extensions.Logging;
 using EmvCardReader.Emv;
+using EmvCardReader.Services;
+using EmvCardReader.ViewModels;
 
 namespace EmvCardReader;
 
@@ -23,6 +25,11 @@ public static class MauiProgram
 		builder.Services.AddSingleton<INfcCardReader, EmvCardReader.Platforms.iOS.IosNfcCardReader>();
 #endif
 
+		// Services.
+		builder.Services.AddSingleton<IClipboardService, ClipboardService>();
+
+		// View models + pages.
+		builder.Services.AddTransient<MainViewModel>();
 		builder.Services.AddTransient<MainPage>();
 
 #if DEBUG
