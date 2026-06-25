@@ -59,9 +59,9 @@ public partial class MainViewModel : ObservableObject
 
     public string ApduToggleText => IsApduVisible ? "Hide raw APDU trace" : "Show raw APDU trace";
 
-    public ObservableCollection<KeyValueRow> Summary { get; } = new();
-    public ObservableCollection<CardApplicationView> Applications { get; } = new();
-    public ObservableCollection<TextLine> Warnings { get; } = new();
+    public ObservableCollection<KeyValueRow> Summary { get; } = [];
+    public ObservableCollection<CardApplicationView> Applications { get; } = [];
+    public ObservableCollection<TextLine> Warnings { get; } = [];
 
     // ---------------------------------------------------------------- commands
 

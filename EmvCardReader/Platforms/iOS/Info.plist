@@ -51,6 +51,7 @@
 		<string>A000000333010101</string>             <!-- UnionPay debit -->
 		<string>A000000333010102</string>             <!-- UnionPay credit -->
 		<string>A000000333010103</string>             <!-- UnionPay quasi-credit -->
+		<string>A0000005551010</string>             
 	</array>
 </dict>
 </plist>
