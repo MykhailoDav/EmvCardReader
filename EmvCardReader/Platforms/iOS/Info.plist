@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>LSRequiresIPhoneOS</key>
+	<true/>
+	<key>UIDeviceFamily</key>
+	<array>
+		<integer>1</integer>
+		<integer>2</integer>
+	</array>
+	<key>UIRequiredDeviceCapabilities</key>
+	<array>
+		<string>arm64</string>
+	</array>
+	<key>UISupportedInterfaceOrientations</key>
+	<array>
+		<string>UIInterfaceOrientationPortrait</string>
+		<string>UIInterfaceOrientationLandscapeLeft</string>
+		<string>UIInterfaceOrientationLandscapeRight</string>
+	</array>
+	<key>UISupportedInterfaceOrientations~ipad</key>
+	<array>
+		<string>UIInterfaceOrientationPortrait</string>
+		<string>UIInterfaceOrientationPortraitUpsideDown</string>
+		<string>UIInterfaceOrientationLandscapeLeft</string>
+		<string>UIInterfaceOrientationLandscapeRight</string>
+	</array>
+	<key>XSAppIconAssets</key>
+	<string>Assets.xcassets/appicon.appiconset</string>
+	<!-- Shown in the system prompt the first time NFC is used. -->
+	<key>NFCReaderUsageDescription</key>
+	<string>This app reads the publicly available data stored on your contactless bank card.</string>
+	<!-- CoreNFC will ONLY let the app SELECT the AIDs listed here. PPSE + the major scheme AIDs. -->
+	<key>com.apple.developer.nfc.readersession.iso7816.select-identifiers</key>
+	<array>
+		<string>325041592E5359532E4444463031</string> <!-- 2PAY.SYS.DDF01 (PPSE) -->
+		<string>A0000000031010</string>               <!-- Visa credit/debit -->
+		<string>A0000000032010</string>               <!-- Visa Electron -->
+		<string>A0000000033010</string>               <!-- Visa Interlink -->
+		<string>A0000000038010</string>               <!-- Visa Plus -->
+		<string>A0000000041010</string>               <!-- Mastercard credit/debit -->
+		<string>A0000000042203</string>               <!-- Mastercard US debit -->
+		<string>A0000000043060</string>               <!-- Maestro -->
+		<string>A00000002501</string>                 <!-- American Express -->
+		<string>A000000025010402</string>             <!-- American Express -->
+		<string>A000000025010701</string>             <!-- American Express -->
+		<string>A0000000651010</string>               <!-- JCB -->
+		<string>A0000001523010</string>               <!-- Discover -->
+		<string>A0000003241010</string>               <!-- Discover/Diners -->
+		<string>A000000333010101</string>             <!-- UnionPay debit -->
+		<string>A000000333010102</string>             <!-- UnionPay credit -->
+		<string>A000000333010103</string>             <!-- UnionPay quasi-credit -->
+	</array>
+</dict>
+</plist>

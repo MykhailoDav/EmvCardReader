@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="EmvCardReader.MainPage"
+             Title="NFC Card Reader"
+             BackgroundColor="{AppThemeBinding Light=#F2F2F7, Dark=#000000}">
+
+    <ScrollView>
+        <VerticalStackLayout Padding="20" Spacing="16">
+
+            <Label
+                Text="💳 Contactless Card Reader"
+                FontSize="24"
+                FontAttributes="Bold"
+                HorizontalOptions="Center" />
+
+            <Label
+                x:Name="StatusLabel"
+                Text="Checking NFC…"
+                FontSize="14"
+                TextColor="{AppThemeBinding Light=#3C3C43, Dark=#AEAEB2}"
+                HorizontalTextAlignment="Center" />
+
+            <Button
+                x:Name="ScanButton"
+                Text="Scan card"
+                Clicked="OnScanClicked"
+                HeightRequest="52"
+                FontAttributes="Bold"
+                CornerRadius="12" />
+
+            <ActivityIndicator
+                x:Name="Spinner"
+                IsRunning="False"
+                IsVisible="False"
+                HorizontalOptions="Center" />
+
+            <VerticalStackLayout x:Name="ResultsLayout" Spacing="14" />
+
+        </VerticalStackLayout>
+    </ScrollView>
+
+</ContentPage>
